@@ -1,0 +1,5 @@
+# Ignore the App concept file
+/AppConcept
+
+# Ignore example folder for now
+example/
