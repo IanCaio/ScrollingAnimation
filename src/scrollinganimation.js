@@ -1,7 +1,9 @@
 /*
 
 The ControlledObjects (CO) is either a single "id" pointing to the object to be animated or
-an array of "id's" pointing to all the objects to be animated.
+an array of "id's" pointing to all the objects to be animated. Internally, those will be stored
+inside an array and then converted to the actuall DOM elements to avoid the costy use of
+document.getElementById().
 
 The AnimationBeginningState (ABS) is an object including the state of the Controlled Object in the 
 beginning of the animation. i.e.: { left: "-100px", opacity: "0" }
@@ -26,6 +28,11 @@ The state is used to check the current animation state.
 var ScrollingAnimation = function (ControlledObjects, AnimationBeginningState, AnimationEndingState, BeginningTriggeringPoint, EndingTriggeringPoint) {
 	// Get the controlled objects, which will converted to an array with all the IDs if necessary:
 	this.CO = ControlledObjects instanceof Array ? ControlledObjects.slice() : [ControlledObjects];
+	// Convert the string IDs to DOM elements (requires Polyfill for Browsers < IE9)
+	this.CO = this.CO.map(function(element){
+		return document.getElementById(element);
+	});
+
 	// Get the animation beginning and ending states
 	this.ABS = Object.assign({}, AnimationBeginningState);
 	this.AES = Object.assign({}, AnimationEndingState);
@@ -44,10 +51,52 @@ var ScrollingAnimation = function (ControlledObjects, AnimationBeginningState, A
 	//Bind methods
 	this.checkState = this.checkState.bind(this);
 	this.checkRatio = this.checkRatio.bind(this);
+	this.updateStyle = this.updateStyle.bind(this);
 
 	//Later change for animation frames
 	setInterval(this.checkState, 100);
 	setInterval(this.checkRatio, 100);
+	setInterval(this.updateStyle, 100);
+}
+
+// Updates the style for each Controlled Object
+ScrollingAnimation.prototype.updateStyle = function(){
+	if (this.state === 0){
+		// Style matches the ABS
+		this.CO.forEach(function(element){
+			for (prop in this.ABS){
+				var appendPx = false;
+				if (prop === "left" || prop === "right" || prop === "top" || prop === "bottom"){
+					appendPx = true;
+				}
+				element.style[prop] = appendPx ? this.ABS[prop] + "px" : this.ABS[prop];
+			}
+		}, this);
+
+	} else if (this.state === 2){
+		// Style matches the AES
+		this.CO.forEach(function(element){
+			for (prop in this.AES){
+				var appendPx = false;
+				if (prop === "left" || prop === "right" || prop === "top" || prop === "bottom"){
+					appendPx = true;
+				}
+				element.style[prop] = appendPx ? this.AES[prop] + "px" : this.AES[prop];
+			}
+		}, this);
+	} else {
+		// Style is between ABS and AES
+		this.CO.forEach(function(element){
+			for (prop in this.AES){
+				var appendPx = false;
+				if (prop === "left" || prop === "right" || prop === "top" || prop === "bottom"){
+					appendPx = true;
+				}
+				var finalValue = this.ABS[prop] + (this.ratio * (this.AES[prop] - this.ABS[prop]));
+				element.style[prop] = appendPx ? finalValue + "px" : finalValue;
+			}
+		}, this);
+	}
 }
 
 // Checks if the ABP and AES objects have the same keys (and nothing else)
