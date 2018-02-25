@@ -46,7 +46,7 @@
 						If you run into an abbreviation that you're not sure the meaning of, come back here
 						to find it!
 					</p>
-					<h3>Terminology:</h3>
+					<h3>Abbreviations:</h3>
 					<dl>
 						<dt>CO (Controlled Object)</dt>
 						<dd>
@@ -82,7 +82,8 @@
 						In the moment the viewport top border hits the BTP, the animation will shift to the "Active" state. The
 						COs properties will be calculated according to the ratio of the current viewport position and
 						the distance between the BTP and ETP. The closer the screen is to the ETP, the closer the properties
-						will be to the AES, and vice-versa.
+						will be to the AES, and the closer the screen is to the BTP, the closer the properties will be to the
+						ABS.
 					</p>
 					<p>
 						Once the viewport passes the ETP, the animation will shift to the "Done" state, where all the COs
@@ -112,24 +113,68 @@
 						&lt;div id="object"&gt;&lt;/div&gt;
 					</p>
 					<p>
-						Then, create a new Scrolling Animation using the ID of the COs, an object containing the
-						Animation Beginning State, an object containing the Animation Ending State, an object
-						with the BTP and an object with the ETP as arguments. The ABS and AES objects should have
-						only matching fields, and the keys should be the properties to be changed during the animation.
-						While the BTP and ETP objects should have an 'id' field or a 'posY' field, depending on what
-						is going to be used as triggering points.
+						Then, create a new Scrolling Animation using the following syntax:
 					</p>
 					<p class="code">
-						&lt;script type="text/javascript"&gt;<br />
-						new ScrollingAnimation("object", { left: 0 }, { left: 200 }, { id: "BTP" }, { id: "ETP" });<br />
-						&lt;/script&gt;
+						new ScrollingAnimation(CO, ABS, AES, BTP, ETP);
 					</p>
 					<p>
-						If you are controlling more than one object, their IDs should be passed as an array:
+						<em>CO</em> should be either a string containing a single ID or an array containing the strings
+						of all the Controlled Objects.
 					</p>
+					<p>
+						<em>ABS</em> and <em>AES</em> should be Javascript objects containing the CSS properties that
+						will be controlled during the animation. Both of them should <strong>only</strong> have matching
+						keys, or the script will log an error to the console and cancel the animation. In the case of
+						the <em>backgroundColor</em> and <em>color</em> properties, their values should also be
+						objects containing the red, green, blue and alpha values of the color. <strong>All</strong> the
+						color fields must be specified, as in <em>{ red: 0, green: 23, blue: 255, alpha: 1 }</em>.
+					</p>
+					<p>
+						The CSS properties supported right now are:
+					</p>
+					<dl>
+						<dt>top</dt>
+						<dt>bottom</dt>
+						<dt>left</dt>
+						<dt>right</dt>
+						<dt>opacity</dt>
+						<dt>backgroundColor</dt>
+						<dt>color</dt>
+					</dl>
+					<p>
+						Or any other CSS property whose value is only a <strong>number</strong> (as the <em>opacity</em> for example).
+					</p>
+					<p>
+						<em>BTP</em> and <em>ETP</em> should both be Javascript objects with either an <em>id</em> field
+						(with the ID of the BTP/ETP element) or a <em>posY</em> field (with the BTP/ETP Y position in pixels).
+						If invalid fields are used, the default values of <em>id</em> and <em>posY</em> will be <em>null</em>
+						and 0 respectivelly. If <em>id</em> has any value other than <em>null</em> it will be used instead
+						of the absolute position.
+					</p>
+					<h3>Examples:</h3>
+					<p>Single object being animated with DOM elements as triggering points</p>
 					<p class="code">
 						&lt;script type="text/javascript"&gt;<br />
-						new ScrollingAnimation(["id1", "id2"], { left: 0 }, { left: 200 }, { id: "BTP" }, { id: "ETP" });<br />
+						new ScrollingAnimation("id", { left: 0 }, { left: 200 }, { id: "BTP" }, { id: "ETP" });<br />
+						&lt;/script&gt;
+					</p>
+					<p>Multiple objects being animated with absolute positions as triggering points:</p>
+					<p class="code">
+						&lt;script type="text/javascript"&gt;<br />
+						new ScrollingAnimation(["id1", "id2"], { left: 0 }, { left: 200 }, { posY: 100 }, { posY: 500 });<br />
+						&lt;/script&gt;
+					</p>
+					<p><em>backgroundColor</em> being animated:</p>
+					<p class="code">
+						&lt;script type="text/javascript"&gt;<br />
+						new ScrollingAnimation("id", { backgroundColor: {red:0, green:255, blue:0, alpha:1 } }, { backgroundColor: {red:255, green:0, blue:0, alpha:1 } }, { posY: 100 }, { posY: 500 });<br />
+						&lt;/script&gt;
+					</p>
+					<p>Multiple properties being animated:</p>
+					<p class="code">
+						&lt;script type="text/javascript"&gt;<br />
+						new ScrollingAnimation(["id1", "id2"], { left: 0, opacity: 0 }, { left: 200, opacity: 1 }, { posY: 100 }, { posY: 500 });<br />
 						&lt;/script&gt;
 					</p>
 				</div>
