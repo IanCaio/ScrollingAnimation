@@ -42,6 +42,15 @@ var ScrollingAnimation = function (ControlledObjects, AnimationBeginningState, A
 		return null;
 	}
 
+	// Creates an array with the state of each CO and initialize the values
+	this.COState = this.CO.map(function(element){
+		var state = Object.assign({}, AnimationBeginningState); // Create the state (values don't matter here because we will change them)
+		for(prop in state){
+			state[prop] = element.style[prop]; // Get the initial values from the DOM element CSS
+		}
+		return state;
+	});
+
 	// Get the beginning and ending triggers
 	this.BTP = Object.assign({id: null, posY: 0}, BeginningTriggeringPoint);
 	this.ETP = Object.assign({id: null, posY: 0}, EndingTriggeringPoint);
@@ -65,37 +74,82 @@ var ScrollingAnimation = function (ControlledObjects, AnimationBeginningState, A
 ScrollingAnimation.prototype.updateStyle = function(){
 	if (this.state === 0){
 		// Style matches the ABS
-		this.CO.forEach(function(element){
+		this.CO.forEach(function(element, index){
+			var changedState = false; // Has the state changed?
+			var newState = Object.assign({}, this.ABS); // Initial values don't matter, we will change them.
+
 			for (prop in this.ABS){
 				var appendPx = false;
 				if (prop === "left" || prop === "right" || prop === "top" || prop === "bottom"){
 					appendPx = true;
 				}
-				element.style[prop] = appendPx ? this.ABS[prop] + "px" : this.ABS[prop];
+				newState[prop] = appendPx ? this.ABS[prop] + "px" : this.ABS[prop];
+
+				// Has at least some property in the state changed?
+				if (newState[prop] !== this.COState[index][prop]) {
+					changedState = true;
+				}
+			}
+
+			if (changedState){
+				for (prop in newState){
+					element.style[prop] = newState[prop];
+					this.COState[index][prop] = newState[prop];
+				}
 			}
 		}, this);
 
 	} else if (this.state === 2){
 		// Style matches the AES
-		this.CO.forEach(function(element){
+		this.CO.forEach(function(element, index){
+			var changedState = false; // Has the state changed?
+			var newState = Object.assign({}, this.ABS); // Initial values don't matter, we will change them.
+
 			for (prop in this.AES){
 				var appendPx = false;
 				if (prop === "left" || prop === "right" || prop === "top" || prop === "bottom"){
 					appendPx = true;
 				}
-				element.style[prop] = appendPx ? this.AES[prop] + "px" : this.AES[prop];
+				newState[prop] = appendPx ? this.AES[prop] + "px" : this.AES[prop];
+
+				// Has at least some property in the state changed?
+				if (newState[prop] !== this.COState[index][prop]) {
+					changedState = true;
+				}
+			}
+
+			if (changedState){
+				for (prop in newState){
+					element.style[prop] = newState[prop];
+					this.COState[index][prop] = newState[prop];
+				}
 			}
 		}, this);
 	} else {
 		// Style is between ABS and AES
-		this.CO.forEach(function(element){
+		this.CO.forEach(function(element, index){
+			var changedState = false; // Has the state changed?
+			var newState = Object.assign({}, this.ABS); // Initial values don't matter, we will change them.
+
 			for (prop in this.AES){
 				var appendPx = false;
 				if (prop === "left" || prop === "right" || prop === "top" || prop === "bottom"){
 					appendPx = true;
 				}
 				var finalValue = this.ABS[prop] + (this.ratio * (this.AES[prop] - this.ABS[prop]));
-				element.style[prop] = appendPx ? finalValue + "px" : finalValue;
+				newState[prop] = appendPx ? finalValue + "px" : finalValue;
+
+				// Has at least some property in the state changed?
+				if (newState[prop] !== this.COState[index][prop]) {
+					changedState = true;
+				}
+			}
+
+			if (changedState){
+				for (prop in newState){
+					element.style[prop] = newState[prop];
+					this.COState[index][prop] = newState[prop];
+				}
 			}
 		}, this);
 	}
