@@ -23,6 +23,7 @@ The state is used to check the current animation state.
 	0 = Inactive
 	1 = Active
 	2 = Done
+
 */
 
 var ScrollingAnimation = function (ControlledObjects, AnimationBeginningState, AnimationEndingState, BeginningTriggeringPoint, EndingTriggeringPoint) {
@@ -44,6 +45,7 @@ var ScrollingAnimation = function (ControlledObjects, AnimationBeginningState, A
 	// Get the beginning and ending triggers
 	this.BTP = Object.assign({id: null, posY: 0}, BeginningTriggeringPoint);
 	this.ETP = Object.assign({id: null, posY: 0}, EndingTriggeringPoint);
+
 	// Initial state and ratio
 	this.state = 0;
 	this.ratio = 0; // The ratio of the current position in relation to BTP and ETP
@@ -100,27 +102,19 @@ ScrollingAnimation.prototype.updateStyle = function(){
 }
 
 // Checks if the ABP and AES objects have the same keys (and nothing else)
-// OBS: It might be better to use Object.keys() instead, though it would
-// drop the support for Browsers below IE9. Object.keys() iterate only the
-// properties owned by the object, without going through the prototype chain
 ScrollingAnimation.prototype.validateAnimStates = function (obj1, obj2) {
-	var numberOfKeys1 = 0;
-	var numberOfKeys2 = 0;
+	var keys1 = Object.keys(obj1);
+	var keys2 = Object.keys(obj2);
 
-	for (key in obj1) {
-		++numberOfKeys1;
-		if(!(key in obj2)){
-			return false;
-		}
-	}
-	for (key in obj2) {
-		++numberOfKeys2;
-	}
-	if (numberOfKeys2 > numberOfKeys1){
-		return false;
+	if (keys1.length === keys2.length) {
+		return keys1.every( function (key) {
+			if (keys2.indexOf(key) >= 0){
+				return true;
+			}
+		});
 	}
 
-	return true;
+	return false;
 }
 
 // Checks the current animation ratio
@@ -140,7 +134,7 @@ ScrollingAnimation.prototype.checkRatio = function () {
 		} else {
 			var total = this.ETP.posY - this.BTP.posY;
 
-			this.ratio = parseFloat(scrollPolyfix.scrollY() - this.BTP.posY)/total;
+			this.ratio = parseFloat(window.pageYOffset - this.BTP.posY)/total;
 		}
 	}
 }
@@ -160,7 +154,7 @@ ScrollingAnimation.prototype.checkState = function () {
 		}
 	} else {
 		//Did we cross the BTP?
-		if (scrollPolyfix.scrollY() >= this.BTP.posY) {
+		if (window.pageYOffset >= this.BTP.posY) {
 			this.state = 1; //We will check later if we are actually in the state 2
 		} else {
 			this.state = 0;
@@ -177,39 +171,8 @@ ScrollingAnimation.prototype.checkState = function () {
 		}
 	} else {
 		//Did we cross the ETP?
-		if (scrollPolyfix.scrollY() >= this.ETP.posY) {
+		if (window.pageYOffset >= this.ETP.posY) {
 			this.state = 2;
 		}
 	}
 }
-
-//Polyfix for scrollX, scrollY, scrollMaxX and scrollMaxY
-var scrollPolyfix = {
-	scrollX: function(){
-		var supportPageOffset = window.pageXOffset !== undefined;
-		var isCSS1Compat = ((document.compatMode || "") === "CSS1Compat");
-
-		return (supportPageOffset ? window.pageXOffset : isCSS1Compat ? document.documentElement.scrollLeft : document.body.scrollLeft);
-	},
-
-	scrollY: function(){
-		var supportPageOffset = window.pageXOffset !== undefined;
-		var isCSS1Compat = ((document.compatMode || "") === "CSS1Compat");
-
-		return (supportPageOffset ? window.pageYOffset : isCSS1Compat ? document.documentElement.scrollTop : document.body.scrollTop);
-	},
-
-	scrollMaxX: function(){
-		var scrollWidth = document.documentElement.scrollWidth || document.body.scrollWidth;
-		var viewportWidth = viewportPolyfix.width();
-
-		return (window.scrollMaxX || (scrollWidth - viewportWidth - 1));
-	},
-
-	scrollMaxY: function(){
-		var scrollHeight = document.documentElement.scrollHeight || document.body.scrollHeight;
-		var viewportHeight = viewportPolyfix.height();
-
-		return (window.scrollMaxY || (scrollHeight - viewportHeight));
-	}
-};
