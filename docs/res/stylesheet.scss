@@ -1,0 +1,70 @@
+---
+---
+
+*, *:before, *:after {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+@font-face {
+	font-family: Zing;
+	src: url('fonts/ZingScriptRustSBDemo-Base.otf');
+}
+@font-face {
+	font-family: Hockey;
+	src: url('fonts/Hockey.ttf');
+}
+@font-face {
+	font-family: ToThePoint;
+	src: url('fonts/ToThePoint.ttf');
+}
+
+.header {
+	width: 100%;
+	height: 60vh;
+	background: url('imgs/BG.jpeg');
+	background-size: cover;
+
+	.title {
+		width: 100%;
+		background: rgba(255, 255, 255, 0.5);
+		padding: 1rem 1rem;
+		text-align: center;
+		font-family: Zing;
+		font-size: 6vh;
+	}
+	.author {
+		width: 100%;
+		background: rgba(255, 255, 255, 0.5);
+		padding: 1rem 1rem;
+		text-align: right;
+		font-family: Zing;
+		font-size: 3vh;
+	}
+}
+
+.content {
+	width: 100%;
+	border-left: 15vw solid lightgrey;
+	padding: 10vh 10vw;
+
+	.section {
+		margin-bottom: 10vh;
+
+		.title {
+			font-family: Hockey;
+			font-size: 8vh;
+			text-align: center;
+			margin-bottom: 5vh;
+		}
+		.body {
+			width: 100%;
+			p {
+				margin-bottom: 5vh;
+			}
+			font-family: ToThePoint;
+			font-size: 4.5vh;
+		}
+	}
+}
