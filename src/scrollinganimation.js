@@ -78,15 +78,32 @@ ScrollingAnimation.prototype.updateStyle = function(){
 			var currentProp;
 
 			for (prop in this.ABS){
-				var appendPx = false;
-				if (prop === "left" || prop === "right" || prop === "top" || prop === "bottom"){
-					appendPx = true;
-				}
-				currentProp = appendPx ? this.ABS[prop] + "px" : this.ABS[prop];
+				currentProp = this.ABS[prop];
 
 				// Has at least some property in the state changed?
 				if (currentProp !== this.COState[index][prop]) {
-					element.style[prop] = currentProp;
+					// Some properties need to be assigned in a special way, since they are not
+					// represented only by a number (ie: backgroundColor and color, since they are
+					// represented with an object having "red", "green", "blue" and "alpha" keys. Or
+					// position properties that need "px" appended).
+					switch (prop) {
+						case "backgroundColor":
+						case "color":
+							var colorString =
+								"rgba(" + currentProp.red + "," + currentProp.green + "," +
+								currentProp.blue + "," + currentProp.alpha + ")";
+							element.style[prop] = colorString;
+							break;
+						case "left":
+						case "right":
+						case "top":
+						case "bottom":
+							element.style[prop] = currentProp + "px";
+							break;
+						default:
+							element.style[prop] = currentProp;
+					}
+
 					this.COState[index][prop] = currentProp;
 				}
 			}
@@ -98,15 +115,32 @@ ScrollingAnimation.prototype.updateStyle = function(){
 			var currentProp;
 
 			for (prop in this.AES){
-				var appendPx = false;
-				if (prop === "left" || prop === "right" || prop === "top" || prop === "bottom"){
-					appendPx = true;
-				}
-				currentProp = appendPx ? this.AES[prop] + "px" : this.AES[prop];
+				currentProp = this.AES[prop];
 
 				// Has at least some property in the state changed?
 				if (currentProp !== this.COState[index][prop]) {
-					element.style[prop] = currentProp;
+					// Some properties need to be assigned in a special way, since they are not
+					// represented only by a number (ie: backgroundColor and color, since they are
+					// represented with an object having "red", "green", "blue" and "alpha" keys. Or
+					// position properties that need "px" appended).
+					switch (prop) {
+						case "backgroundColor":
+						case "color":
+							var colorString =
+								"rgba(" + currentProp.red + "," + currentProp.green + "," +
+								currentProp.blue + "," + currentProp.alpha + ")";
+							element.style[prop] = colorString;
+							break;
+						case "left":
+						case "right":
+						case "top":
+						case "bottom":
+							element.style[prop] = currentProp + "px";
+							break;
+						default:
+							element.style[prop] = currentProp;
+					}
+
 					this.COState[index][prop] = currentProp;
 				}
 			}
@@ -117,16 +151,49 @@ ScrollingAnimation.prototype.updateStyle = function(){
 			var currentProp;
 
 			for (prop in this.AES){
-				var appendPx = false;
-				if (prop === "left" || prop === "right" || prop === "top" || prop === "bottom"){
-					appendPx = true;
+				// Some properties need to be treated specially when assigning their value according to the ratio,
+				// since they are not represented only by a number (ie: backgroundColor and color are represented
+				// by an object with fields for red, green, blue and alpha values. Those values need to be updated
+				// individually and then assigned to a new object which will represent the new backgroundColor/color
+				// value).
+				switch (prop) {
+					case "backgroundColor":
+					case "color":
+						var newRed = this.ABS[prop].red + (this.ratio * (this.AES[prop].red - this.ABS[prop].red));
+						var newGreen = this.ABS[prop].green + (this.ratio * (this.AES[prop].green - this.ABS[prop].green));
+						var newBlue = this.ABS[prop].blue + (this.ratio * (this.AES[prop].blue - this.ABS[prop].blue));
+						var newAlpha = this.ABS[prop].alpha + (this.ratio * (this.AES[prop].alpha - this.ABS[prop].alpha));
+
+						currentProp = { red: newRed, green: newGreen, blue: newBlue, alpha: newAlpha };
+						break;
+					default:
+						currentProp = this.ABS[prop] + (this.ratio * (this.AES[prop] - this.ABS[prop]));
 				}
-				var finalValue = this.ABS[prop] + (this.ratio * (this.AES[prop] - this.ABS[prop]));
-				currentProp = appendPx ? finalValue + "px" : finalValue;
 
 				// Has at least some property in the state changed?
 				if (currentProp !== this.COState[index][prop]) {
-					element.style[prop] = currentProp;
+					// Some properties need to be assigned in a special way, since they are not
+					// represented only by a number (ie: backgroundColor and color, since they are
+					// represented with an object having "red", "green", "blue" and "alpha" keys. Or
+					// position properties that need "px" appended).
+					switch (prop) {
+						case "backgroundColor":
+						case "color":
+							var colorString =
+								"rgba(" + currentProp.red + "," + currentProp.green + "," +
+								currentProp.blue + "," + currentProp.alpha + ")";
+							element.style[prop] = colorString;
+							break;
+						case "left":
+						case "right":
+						case "top":
+						case "bottom":
+							element.style[prop] = currentProp + "px";
+							break;
+						default:
+							element.style[prop] = currentProp;
+					}
+
 					this.COState[index][prop] = currentProp;
 				}
 			}

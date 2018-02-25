@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>Scrolling Animation</title>
+		<link type="text/css" rel="stylesheet" href="res/stylesheet.css" />
+	</head>
+	<body>
+		<div class="header">
+			<div class="title">
+				Scrolling Animation
+			</div>
+			<div class="author">
+				Written by Ian Caio
+			</div>
+		</div>
+
+		<div class="content">
+			<div class="section">
+				<div class="title">
+					Description
+				</div>
+				<div class="body">
+					<p>
+						Scrolling Animation is a script written in pure Javascript with the purpose of
+						implementing easy-to-use scrolling activated animations in websites. Those can
+						be used to improve the User Experience, by making the website content display
+						a little more dynamic.
+					</p>
+					<p>
+						Its implementation and usage is explained in details in this page. If you're not
+						interested in how it works, and just want to quickly learn how to use it in your
+						website just skip to the "How to use" section.
+					</p>
+				</div>
+			</div>
+
+			<div class="section">
+				<div class="title">
+					Implementation
+				</div>
+				<div class="body">
+					<p>
+						To avoid using repeated long words a lot of times in this documentation, I'll list
+						some of the definitions relevant to the script implementation and their abbreviations.
+						If you run into an abbreviation that you're not sure the meaning of, come back here
+						to find it!
+					</p>
+					<h3>Abbreviations:</h3>
+					<dl>
+						<dt>CO (Controlled Object)</dt>
+						<dd>
+							Those are the elements being controlled by the animation. Their DOM CSS properties
+							will be updated according to the animation state.
+						</dd>
+						<dt>ABS (Animation Beginning State)</dt>
+						<dd>
+							This is the state of the COs before and at the animation beginning. It's an object
+							containing the list of properties that are controlled by the animation.
+						</dd>
+						<dt>AES (Animation Ending State)</dt>
+						<dd>
+							This is the state of the COs at the ending and after the animation is done. It's an object
+							containing the list of properties that are controlled by the animation.
+						</dd>
+						<dt>BTP (Beginning Triggering Point)</dt>
+						<dd>
+							This is the point that will trigger the beginning of the animation. It can be either
+							a screen Y position in pixels or an element's ID.
+						</dd>
+						<dt>ETP (Ending Triggering Point)</dt>
+						<dd>
+							This is the point that will trigger the end of the animation. It can be either a screen
+							Y position in pixels or an element's ID.
+						</dd>
+					</dl>
+					<p>
+						Before the viewport top border reaches the BTP element or position, the animation will be in the
+						"Inactive" state. In that state, the COs properties will be equal to the ABS properties.
+					</p>
+					<p>
+						In the moment the viewport top border hits the BTP, the animation will shift to the "Active" state. The
+						COs properties will be calculated according to the ratio of the current viewport position and
+						the distance between the BTP and ETP. The closer the screen is to the ETP, the closer the properties
+						will be to the AES, and the closer the screen is to the BTP, the closer the properties will be to the
+						ABS.
+					</p>
+					<p>
+						Once the viewport passes the ETP, the animation will shift to the "Done" state, where all the COs
+						properties will be equal to the AES.
+					</p>
+					<p>
+						To make the script a little more efficient, we store the current state of every CO in an array and
+						only touch the DOM CSS properties when there is a change. This avoids the DOM CSS being manipulated
+						more often than necessary and possibly causing unnecessary re-renders.
+					</p>
+				</div>
+			</div>
+
+			<div class="section">
+				<div class="title">
+					How to use
+				</div>
+				<div class="body">
+					<p>
+						To use Scrolling Animation, first you'll have to assign an ID to the elements that are being
+						manipulated (COs) and optionally an ID to the elements that will function as BTP and ETP (if
+						you want to use elements instead of absolute pixel positions):
+					</p>
+					<p class="code">
+						&lt;div id="BTP"&gt;&lt;/div&gt;<br />
+						&lt;div id="ETP"&gt;&lt;/div&gt;<br />
+						&lt;div id="object"&gt;&lt;/div&gt;
+					</p>
+					<p>
+						Then, create a new Scrolling Animation using the following syntax:
+					</p>
+					<p class="code">
+						new ScrollingAnimation(CO, ABS, AES, BTP, ETP);
+					</p>
+					<p>
+						<em>CO</em> should be either a string containing a single ID or an array containing the strings
+						of all the Controlled Objects.
+					</p>
+					<p>
+						<em>ABS</em> and <em>AES</em> should be Javascript objects containing the CSS properties that
+						will be controlled during the animation. Both of them should <strong>only</strong> have matching
+						keys, or the script will log an error to the console and cancel the animation. In the case of
+						the <em>backgroundColor</em> and <em>color</em> properties, their values should also be
+						objects containing the red, green, blue and alpha values of the color. <strong>All</strong> the
+						color fields must be specified, as in <em>{ red: 0, green: 23, blue: 255, alpha: 1 }</em>.
+					</p>
+					<p>
+						The CSS properties supported right now are:
+					</p>
+					<dl>
+						<dt>top</dt>
+						<dt>bottom</dt>
+						<dt>left</dt>
+						<dt>right</dt>
+						<dt>opacity</dt>
+						<dt>backgroundColor</dt>
+						<dt>color</dt>
+					</dl>
+					<p>
+						Or any other CSS property whose value is only a <strong>number</strong> (as the <em>opacity</em> for example).
+					</p>
+					<p>
+						<em>BTP</em> and <em>ETP</em> should both be Javascript objects with either an <em>id</em> field
+						(with the ID of the BTP/ETP element) or a <em>posY</em> field (with the BTP/ETP Y position in pixels).
+						If invalid fields are used, the default values of <em>id</em> and <em>posY</em> will be <em>null</em>
+						and 0 respectivelly. If <em>id</em> has any value other than <em>null</em> it will be used instead
+						of the absolute position.
+					</p>
+					<h3>Examples:</h3>
+					<p>Single object being animated with DOM elements as triggering points</p>
+					<p class="code">
+						&lt;script type="text/javascript"&gt;<br />
+						new ScrollingAnimation("id", { left: 0 }, { left: 200 }, { id: "BTP" }, { id: "ETP" });<br />
+						&lt;/script&gt;
+					</p>
+					<p>Multiple objects being animated with absolute positions as triggering points:</p>
+					<p class="code">
+						&lt;script type="text/javascript"&gt;<br />
+						new ScrollingAnimation(["id1", "id2"], { left: 0 }, { left: 200 }, { posY: 100 }, { posY: 500 });<br />
+						&lt;/script&gt;
+					</p>
+					<p><em>backgroundColor</em> being animated:</p>
+					<p class="code">
+						&lt;script type="text/javascript"&gt;<br />
+						new ScrollingAnimation("id", { backgroundColor: {red:0, green:255, blue:0, alpha:1 } }, { backgroundColor: {red:255, green:0, blue:0, alpha:1 } }, { posY: 100 }, { posY: 500 });<br />
+						&lt;/script&gt;
+					</p>
+					<p>Multiple properties being animated:</p>
+					<p class="code">
+						&lt;script type="text/javascript"&gt;<br />
+						new ScrollingAnimation(["id1", "id2"], { left: 0, opacity: 0 }, { left: 200, opacity: 1 }, { posY: 100 }, { posY: 500 });<br />
+						&lt;/script&gt;
+					</p>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
