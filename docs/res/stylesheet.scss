@@ -60,11 +60,29 @@
 		}
 		.body {
 			width: 100%;
+			font-family: ToThePoint;
+			font-size: 4.5vh;
 			p {
 				margin-bottom: 5vh;
 			}
-			font-family: ToThePoint;
-			font-size: 4.5vh;
+			p.code {
+				font-size: 4vh;
+				background-color: #EEEEEE;
+			}
+
+			h3 {
+				margin-bottom: 3vh;
+			}
+			dl {
+				padding: 0 2rem;
+				margin-bottom: 5vh;
+				dt {
+					font-style: italic;
+				}
+				dd {
+					padding-left: 2rem;
+				}
+			}
 		}
 	}
 }

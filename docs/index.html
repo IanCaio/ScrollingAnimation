@@ -41,7 +41,57 @@
 				</div>
 				<div class="body">
 					<p>
-						Here, the details about the script implementation will be explained.
+						To avoid using repeated long words a lot of times in this documentation, I'll list
+						some of the definitions relevant to the script implementation and their abbreviations.
+						If you run into an abbreviation that you're not sure the meaning of, come back here
+						to find it!
+					</p>
+					<h3>Terminology:</h3>
+					<dl>
+						<dt>CO (Controlled Object)</dt>
+						<dd>
+							Those are the elements being controlled by the animation. Their DOM CSS properties
+							will be updated according to the animation state.
+						</dd>
+						<dt>ABS (Animation Beginning State)</dt>
+						<dd>
+							This is the state of the COs before and at the animation beginning. It's an object
+							containing the list of properties that are controlled by the animation.
+						</dd>
+						<dt>AES (Animation Ending State)</dt>
+						<dd>
+							This is the state of the COs at the ending and after the animation is done. It's an object
+							containing the list of properties that are controlled by the animation.
+						</dd>
+						<dt>BTP (Beginning Triggering Point)</dt>
+						<dd>
+							This is the point that will trigger the beginning of the animation. It can be either
+							a screen Y position in pixels or an element's ID.
+						</dd>
+						<dt>ETP (Ending Triggering Point)</dt>
+						<dd>
+							This is the point that will trigger the end of the animation. It can be either a screen
+							Y position in pixels or an element's ID.
+						</dd>
+					</dl>
+					<p>
+						Before the viewport top border reaches the BTP element or position, the animation will be in the
+						"Inactive" state. In that state, the COs properties will be equal to the ABS properties.
+					</p>
+					<p>
+						In the moment the viewport top border hits the BTP, the animation will shift to the "Active" state. The
+						COs properties will be calculated according to the ratio of the current viewport position and
+						the distance between the BTP and ETP. The closer the screen is to the ETP, the closer the properties
+						will be to the AES, and vice-versa.
+					</p>
+					<p>
+						Once the viewport passes the ETP, the animation will shift to the "Done" state, where all the COs
+						properties will be equal to the AES.
+					</p>
+					<p>
+						To make the script a little more efficient, we store the current state of every CO in an array and
+						only touch the DOM CSS properties when there is a change. This avoids the DOM CSS being manipulated
+						more often than necessary and possibly causing unnecessary re-renders.
 					</p>
 				</div>
 			</div>
@@ -52,7 +102,35 @@
 				</div>
 				<div class="body">
 					<p>
-						Here, we will have a small description of how to use the script (most common usage).
+						To use Scrolling Animation, first you'll have to assign an ID to the elements that are being
+						manipulated (COs) and optionally an ID to the elements that will function as BTP and ETP (if
+						you want to use elements instead of absolute pixel positions):
+					</p>
+					<p class="code">
+						&lt;div id="BTP"&gt;&lt;/div&gt;<br />
+						&lt;div id="ETP"&gt;&lt;/div&gt;<br />
+						&lt;div id="object"&gt;&lt;/div&gt;
+					</p>
+					<p>
+						Then, create a new Scrolling Animation using the ID of the COs, an object containing the
+						Animation Beginning State, an object containing the Animation Ending State, an object
+						with the BTP and an object with the ETP as arguments. The ABS and AES objects should have
+						only matching fields, and the keys should be the properties to be changed during the animation.
+						While the BTP and ETP objects should have an 'id' field or a 'posY' field, depending on what
+						is going to be used as triggering points.
+					</p>
+					<p class="code">
+						&lt;script type="text/javascript"&gt;<br />
+						new ScrollingAnimation("object", { left: 0 }, { left: 200 }, { id: "BTP" }, { id: "ETP" });<br />
+						&lt;/script&gt;
+					</p>
+					<p>
+						If you are controlling more than one object, their IDs should be passed as an array:
+					</p>
+					<p class="code">
+						&lt;script type="text/javascript"&gt;<br />
+						new ScrollingAnimation(["id1", "id2"], { left: 0 }, { left: 200 }, { id: "BTP" }, { id: "ETP" });<br />
+						&lt;/script&gt;
 					</p>
 				</div>
 			</div>
