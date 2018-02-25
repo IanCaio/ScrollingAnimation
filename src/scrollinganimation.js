@@ -54,9 +54,9 @@ var ScrollingAnimation = function (ControlledObjects, AnimationBeginningState, A
 	this.updateStyle = this.updateStyle.bind(this);
 
 	//Later change for animation frames
-	setInterval(this.checkState, 100);
-	setInterval(this.checkRatio, 100);
-	setInterval(this.updateStyle, 100);
+	setInterval(this.checkState, 16);
+	setInterval(this.checkRatio, 16);
+	setInterval(this.updateStyle, 16);
 }
 
 // Updates the style for each Controlled Object
