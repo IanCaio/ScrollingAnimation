@@ -4,6 +4,7 @@
 *, *:before, *:after {
 	margin: 0;
 	padding: 0;
+	position: relative;
 	box-sizing: border-box;
 }
 
@@ -19,6 +20,10 @@
 	font-family: ToThePoint;
 	src: url('fonts/ToThePoint.ttf');
 }
+
+$min-aspect-ratio: "4/3";
+$min-width: 800px;
+$min-height: 600px;
 
 .header {
 	width: 100%;
@@ -48,8 +53,10 @@
 	width: 100%;
 	border-left: 15vw solid lightgrey;
 	padding: 10vh 10vw;
+	overflow: hidden;
 
 	.section {
+		overflow: hidden;
 		margin-bottom: 10vh;
 
 		.title {
@@ -87,5 +94,12 @@
 				}
 			}
 		}
+	}
+}
+
+//Content fallback layout
+@media not screen and (min-aspect-ratio: $min-aspect-ratio) and (min-width: $min-width) and (min-height: $min-height) {
+	.content {
+		border-left: none;
 	}
 }

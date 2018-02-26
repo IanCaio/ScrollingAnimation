@@ -6,7 +6,7 @@
 		<link type="text/css" rel="stylesheet" href="res/stylesheet.css" />
 	</head>
 	<body>
-		<div class="header">
+		<div id="TP1" class="header">
 			<div class="title">
 				Scrolling Animation
 			</div>
@@ -15,12 +15,12 @@
 			</div>
 		</div>
 
-		<div class="content">
+		<div id="TP2" class="content">
 			<div class="section">
 				<div class="title">
 					Description
 				</div>
-				<div class="body">
+				<div id="CO1" class="body">
 					<p>
 						Scrolling Animation is a script written in pure Javascript with the purpose of
 						implementing easy-to-use scrolling activated animations in websites. Those can
@@ -35,7 +35,7 @@
 				</div>
 			</div>
 
-			<div class="section">
+			<div id="TP3" class="section">
 				<div class="title">
 					Implementation
 				</div>
@@ -68,7 +68,7 @@
 							This is the point that will trigger the beginning of the animation. It can be either
 							a screen Y position in pixels or an element's ID.
 						</dd>
-						<dt>ETP (Ending Triggering Point)</dt>
+						<dt id="TP4">ETP (Ending Triggering Point)</dt>
 						<dd>
 							This is the point that will trigger the end of the animation. It can be either a screen
 							Y position in pixels or an element's ID.
@@ -89,7 +89,7 @@
 						Once the viewport passes the ETP, the animation will shift to the "Done" state, where all the COs
 						properties will be equal to the AES.
 					</p>
-					<p>
+					<p id="TP5">
 						To make the script a little more efficient, we store the current state of every CO in an array and
 						only touch the DOM CSS properties when there is a change. This avoids the DOM CSS being manipulated
 						more often than necessary and possibly causing unnecessary re-renders.
@@ -97,7 +97,7 @@
 				</div>
 			</div>
 
-			<div class="section">
+			<div id="CO2" class="section">
 				<div class="title">
 					How to use
 				</div>
@@ -118,7 +118,7 @@
 					<p class="code">
 						new ScrollingAnimation(CO, ABS, AES, BTP, ETP, Config);
 					</p>
-					<p>
+					<p id="TP6">
 						<em>CO</em> should be either a string containing a single ID or an array containing the strings
 						of all the Controlled Objects.
 					</p>
@@ -130,17 +130,17 @@
 						objects containing the red, green, blue and alpha values of the color. <strong>All</strong> the
 						color fields must be specified, as in <em>{ red: 0, green: 23, blue: 255, alpha: 1 }</em>.
 					</p>
-					<p>
+					<p id="TP7">
 						The CSS properties supported right now are:
 					</p>
 					<dl>
-						<dt>top</dt>
-						<dt>bottom</dt>
-						<dt>left</dt>
-						<dt>right</dt>
-						<dt>opacity</dt>
-						<dt>backgroundColor</dt>
-						<dt>color</dt>
+						<dt id="CO3">top</dt>
+						<dt id="CO4">bottom</dt>
+						<dt id="CO5">left</dt>
+						<dt id="CO6">right</dt>
+						<dt id="CO7">opacity</dt>
+						<dt id="CO8">backgroundColor</dt>
+						<dt id="CO9">color</dt>
 					</dl>
 					<p>
 						Or any other CSS property whose value is only a <strong>number</strong> (as the <em>opacity</em> for example).
@@ -199,5 +199,19 @@
 				</div>
 			</div>
 		</div>
+
+		<script type="text/javascript" src="res/scrollinganimation.js"></script>
+		<script type="text/javascript">
+			new ScrollingAnimation("CO1", { left: -800, opacity: 0 }, { left: 0, opacity: 1 }, { id: "TP1" }, { id: "TP2" }, { killOnEnd: true });
+			new ScrollingAnimation("TP3", { right: -800, opacity: 0 }, { right: 0, opacity: 1 }, { id: "TP2" }, { id: "TP3" }, { killOnEnd: true });
+			new ScrollingAnimation("CO2", { top: 800, opacity: 0 }, { top: 0, opacity: 1 }, { id: "TP4" }, { id: "TP5" }, { killOnEnd: true });
+			new ScrollingAnimation("CO3", { top: -20 }, { top: 0 }, { id: "TP6" }, { id: "TP7" });
+			new ScrollingAnimation("CO4", { bottom: -20 }, { bottom: 0 }, { id: "TP6" }, { id: "TP7" });
+			new ScrollingAnimation("CO5", { left: -20 }, { left: 0 }, { id: "TP6" }, { id: "TP7" });
+			new ScrollingAnimation("CO6", { right: -20 }, { right: 0 }, { id: "TP6" }, { id: "TP7" });
+			new ScrollingAnimation("CO7", { opacity: 0 }, { opacity: 1 }, { id: "TP6" }, { id: "TP7" });
+			new ScrollingAnimation("CO8", { backgroundColor:{red:0,green:0,blue:0,alpha:0} }, { backgroundColor:{red:255,green:40,blue:40,alpha:1} }, { id: "TP6" }, { id: "TP7" });
+			new ScrollingAnimation("CO9", { color:{red:0,green:0,blue:0,alpha:1} }, { color:{red:75,green:50,blue:255,alpha:1} }, { id: "TP6" }, { id: "TP7" });
+		</script>
 	</body>
 </html>
