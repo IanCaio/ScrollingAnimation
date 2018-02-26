@@ -39,7 +39,7 @@ To use Scrolling Animation, first you'll have to assign an ID to the elements th
 Then, create a new Scrolling Animation using the following syntax:
 
 ```
-new ScrollingAnimation(CO, ABS, AES, BTP, ETP);
+new ScrollingAnimation(CO, ABS, AES, BTP, ETP, Config);
 ```
 
 _CO_ should be either a string containing a single ID or an array containing the strings of all the Controlled Objects.
