@@ -1,5 +1,8 @@
 # Ignore the App concept file
 /AppConcept
 
+# Ignore the TODO file
+/TODO
+
 # Ignore example folder for now
 example/

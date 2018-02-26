@@ -118,7 +118,6 @@ ScrollingAnimation.prototype.updateStyle = function(){
 				}
 			}
 		}, this);
-
 	} else if (this.state === 2){
 		// Style matches the AES
 		this.CO.forEach(function(element, index){
