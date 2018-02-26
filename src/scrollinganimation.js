@@ -80,6 +80,31 @@ ScrollingAnimation.prototype.update = function(){
 	this.updateStyle();
 }
 
+// Returns a rgba(r,g,b,a) string from an object with red, green, blue and alpha fields
+ScrollingAnimation.prototype.colorFromObj = function (obj) {
+	return "rgba(" + parseInt(obj.red) + "," + parseInt(obj.green) + "," + parseInt(obj.blue) + "," + obj.alpha + ")";
+}
+
+// Checks if two objects are equivalent
+ScrollingAnimation.prototype.areEquivalent = function (obj1, obj2) {
+	var props1 = Object.getOwnPropertyNames(obj1);
+	var props2 = Object.getOwnPropertyNames(obj2);
+
+	if (props1.length !== props2.length) {
+		return false;
+	}
+
+	for (var i = 0; i < props1.length; i++){
+		var prop = props1[i];
+
+		if (obj1[prop] !== obj2[prop]){
+			return false;
+		}
+	}
+
+	return true;
+}
+
 // Updates the style for each Controlled Object
 ScrollingAnimation.prototype.updateStyle = function(){
 	if (this.state === 0){
@@ -91,7 +116,9 @@ ScrollingAnimation.prototype.updateStyle = function(){
 				currentProp = this.ABS[prop];
 
 				// Has at least some property in the state changed?
-				if (currentProp !== this.COState[index][prop]) {
+				var stateChange = (currentProp instanceof Object) ?
+					!this.areEquivalent(currentProp, this.COState[index][prop]) : currentProp !== this.COState[index][prop];
+				if (stateChange) {
 					// Some properties need to be assigned in a special way, since they are not
 					// represented only by a number (ie: backgroundColor and color, since they are
 					// represented with an object having "red", "green", "blue" and "alpha" keys. Or
@@ -99,10 +126,7 @@ ScrollingAnimation.prototype.updateStyle = function(){
 					switch (prop) {
 						case "backgroundColor":
 						case "color":
-							var colorString =
-								"rgba(" + currentProp.red + "," + currentProp.green + "," +
-								currentProp.blue + "," + currentProp.alpha + ")";
-							element.style[prop] = colorString;
+							element.style[prop] = this.colorFromObj(currentProp);
 							break;
 						case "left":
 						case "right":
@@ -127,7 +151,9 @@ ScrollingAnimation.prototype.updateStyle = function(){
 				currentProp = this.AES[prop];
 
 				// Has at least some property in the state changed?
-				if (currentProp !== this.COState[index][prop]) {
+				var stateChange = (currentProp instanceof Object) ?
+					!this.areEquivalent(currentProp, this.COState[index][prop]) : currentProp !== this.COState[index][prop];
+				if (stateChange) {
 					// Some properties need to be assigned in a special way, since they are not
 					// represented only by a number (ie: backgroundColor and color, since they are
 					// represented with an object having "red", "green", "blue" and "alpha" keys. Or
@@ -135,10 +161,7 @@ ScrollingAnimation.prototype.updateStyle = function(){
 					switch (prop) {
 						case "backgroundColor":
 						case "color":
-							var colorString =
-								"rgba(" + currentProp.red + "," + currentProp.green + "," +
-								currentProp.blue + "," + currentProp.alpha + ")";
-							element.style[prop] = colorString;
+							element.style[prop] = this.colorFromObj(currentProp);
 							break;
 						case "left":
 						case "right":
@@ -180,7 +203,9 @@ ScrollingAnimation.prototype.updateStyle = function(){
 				}
 
 				// Has at least some property in the state changed?
-				if (currentProp !== this.COState[index][prop]) {
+				var stateChange = (currentProp instanceof Object) ?
+					!this.areEquivalent(currentProp, this.COState[index][prop]) : currentProp !== this.COState[index][prop];
+				if (stateChange) {
 					// Some properties need to be assigned in a special way, since they are not
 					// represented only by a number (ie: backgroundColor and color, since they are
 					// represented with an object having "red", "green", "blue" and "alpha" keys. Or
@@ -188,10 +213,7 @@ ScrollingAnimation.prototype.updateStyle = function(){
 					switch (prop) {
 						case "backgroundColor":
 						case "color":
-							var colorString =
-								"rgba(" + currentProp.red + "," + currentProp.green + "," +
-								currentProp.blue + "," + currentProp.alpha + ")";
-							element.style[prop] = colorString;
+							element.style[prop] = this.colorFromObj(currentProp);
 							break;
 						case "left":
 						case "right":
