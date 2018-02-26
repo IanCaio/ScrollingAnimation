@@ -66,6 +66,9 @@
 				margin-bottom: 5vh;
 			}
 			p.code {
+				padding: 1rem;
+				white-space: nowrap;
+				overflow: auto;
 				font-size: 4vh;
 				background-color: #EEEEEE;
 			}

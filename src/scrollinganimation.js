@@ -26,7 +26,8 @@ The state is used to check the current animation state.
 
 */
 
-var ScrollingAnimation = function (ControlledObjects, AnimationBeginningState, AnimationEndingState, BeginningTriggeringPoint, EndingTriggeringPoint) {
+var ScrollingAnimation = function (ControlledObjects, AnimationBeginningState, AnimationEndingState,
+				BeginningTriggeringPoint, EndingTriggeringPoint, Configuration) {
 	// Get the controlled objects, which will converted to an array with all the IDs if necessary:
 	this.CO = ControlledObjects instanceof Array ? ControlledObjects.slice() : [ControlledObjects];
 	// Convert the string IDs to DOM elements (requires Polyfill for Browsers < IE9)
@@ -59,15 +60,24 @@ var ScrollingAnimation = function (ControlledObjects, AnimationBeginningState, A
 	this.state = 0;
 	this.ratio = 0; // The ratio of the current position in relation to BTP and ETP
 
+	// Set the configurations or use the defaults if none is given
+	// For now the only configuration option we have is killOnEnd: When it's true, the animation will stop once it reaches
+	// the "Done" state. The default is false.
+	var defaultConfig = { killOnEnd: false };
+	this.config = (typeof Configuration === 'undefined') ? defaultConfig : Object.assign(defaultConfig, Configuration);
+
 	//Bind methods
-	this.checkState = this.checkState.bind(this);
-	this.checkRatio = this.checkRatio.bind(this);
-	this.updateStyle = this.updateStyle.bind(this);
+	this.update = this.update.bind(this);
 
 	//Later change for animation frames
-	setInterval(this.checkState, 16);
-	setInterval(this.checkRatio, 16);
-	setInterval(this.updateStyle, 16);
+	this.intervalID = setInterval(this.update, 16);
+}
+
+// General update function
+ScrollingAnimation.prototype.update = function(){
+	this.checkState();
+	this.checkRatio();
+	this.updateStyle();
 }
 
 // Updates the style for each Controlled Object
@@ -274,5 +284,9 @@ ScrollingAnimation.prototype.checkState = function () {
 		if (window.pageYOffset >= this.ETP.posY) {
 			this.state = 2;
 		}
+	}
+
+	if (this.config.killOnEnd && this.state === 2) {
+		clearInterval(this.intervalID);
 	}
 }

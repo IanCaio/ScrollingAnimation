@@ -42,9 +42,9 @@ Then, create a new Scrolling Animation using the following syntax:
 new ScrollingAnimation(CO, ABS, AES, BTP, ETP);
 ```
 
-CO should be either a string containing a single ID or an array containing the strings of all the Controlled Objects.
+_CO_ should be either a string containing a single ID or an array containing the strings of all the Controlled Objects.
 
-ABS and AES should be Javascript objects containing the CSS properties that will be controlled during the animation. Both of them should only have matching keys, or the script will log an error to the console and cancel the animation. In the case of the backgroundColor and color properties, their values should also be objects containing the red, green, blue and alpha values of the color. All the color fields must be specified, as in { red: 0, green: 23, blue: 255, alpha: 1 }.
+_ABS_ and _AES_ should be Javascript objects containing the CSS properties that will be controlled during the animation. Both of them should __only__ have matching keys, or the script will log an error to the console and cancel the animation. In the case of the backgroundColor and color properties, their values should also be objects containing the red, green, blue and alpha values of the color. __All__ the color fields must be specified, as in _{ red: 0, green: 23, blue: 255, alpha: 1 }_.
 
 The CSS properties supported right now are:
 
@@ -56,9 +56,13 @@ The CSS properties supported right now are:
 - backgroundColor
 - color
 
-Or any other CSS property whose value is only a number (as the opacity for example).
+Or any other CSS property whose value is only a __number__ (as the _opacity_ for example).
 
-BTP and ETP should both be Javascript objects with either an id field (with the ID of the BTP/ETP element) or a posY field (with the BTP/ETP Y position in pixels). If invalid fields are used, the default values of id and posY will be null and 0 respectivelly. If id has any value other than null it will be used instead of the absolute position.
+_BTP_ and _ETP_ should both be Javascript objects with either an _id_ field (with the ID of the _BTP_/_ETP_ element) or a _posY_ field (with the _BTP_/_ETP_ Y position in pixels). If invalid fields are used, the default values of _id_ and _posY_ will be _null_ and 0 respectivelly. If id has any value other than null it will be used instead of the absolute position.
+
+Finally, _Config_ is a Javascript object with the configuration settings for this Scrolling Animation instance. This is optional and can be ommited if the default configuration settings are desired. The configuration options supported are listed below:
+
+- killOnEnd - If this configuration is set to true, the animation will kill itself once it reaches the "Done" state. The default value is false.
 
 ### Examples:
 
@@ -91,5 +95,13 @@ Multiple properties being animated:
 ```
 <script type="text/javascript">
 new ScrollingAnimation(["id1", "id2"], { left: 0, opacity: 0 }, { left: 200, opacity: 1 }, { posY: 100 }, { posY: 500 });
+</script>
+```
+
+Enabling the killOnEnd configuration:
+
+```
+<script type="text/javascript">
+new ScrollingAnimation("id", { left: 0 }, { left: 200 }, { id: "BTP" }, { id: "ETP" }, { killOnEnd: true });
 </script>
 ```
