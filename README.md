@@ -64,7 +64,34 @@ Finally, _Config_ is a Javascript object with the configuration settings for thi
 
 - killOnEnd - If this configuration is set to true, the animation will kill itself once it reaches the "Done" state. The default value is false.
 
-### Examples:
+### Using units on position properties:
+
+When using the _top_, _bottom_, _left_ and _right_ CSS properties, there are two options: Define the CSS unit to be used or use the default "px" unit.
+
+If both the ABS and AES have a unitless number, the default "px" unit is assumed.
+
+```
+new ScrollingAnimation("id", { left: 0 }, { left: 50 }, { id: "BTP" }, { id: "ETP" });
+// Implicit pixels unit: ABS has left = 0px and AES has left = 50px.
+```
+
+If either ABS or AES have a unitless number, but the other one __specifies__ a unit, this unit will be used on __both__.
+
+```
+new ScrollingAnimation("id", { left: "0vw" }, { left: 50 }, { id: "BTP" }, { id: "ETP" });
+// Explicit viewport-width unit: ABS has left = 0vw and AES has left = 50vw.
+```
+
+If both ABS and AES have a unit, their unit is going to be used. __But their units must match__, or you'll have the unwanted behavior of having the ABS unit being used in the "Inactive" and "Active" states, while the AES unit is used in the "Done" state. That's almost certainly not what you desire.
+
+```
+new ScrollingAnimation("id", { left: "-50vw" }, { left: "50vw" }, { id: "BTP" }, { id: "ETP" });
+// Explicit viewport-width unit: ABS has left = -50vw and AES has left = 50vw. // The units match!
+```
+
+Remember to use quotes if you are using units, since `{ left: 50vw }` is invalid Javascript.
+
+## Examples:
 
 Single object being animated with DOM elements as triggering points
 

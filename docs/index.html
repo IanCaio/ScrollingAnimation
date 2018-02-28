@@ -168,7 +168,48 @@
 						</dd>
 					</dl>
 
-					<h3>Examples:</h3>
+					<h3>Using units on position properties:</h3>
+					<p>
+						When using the <em>top</em>, <em>bottom</em>, <em>left</em> and <em>right</em> CSS properties, there
+						are two options: Define the CSS unit to be used or use the default "px" unit.
+					</p>
+					<p>
+						If both the ABS and AES have a unitless number, the default "px" unit is assumed.
+					</p>
+					<p class="code">
+						new ScrollingAnimation("id", { left: 0 }, { left: 50 }, { id: "BTP" }, { id: "ETP" });<br />
+						// Implicit pixels unit: ABS has left = 0px and AES has left = 50px.
+					</p>
+					<p>
+						If either ABS or AES have a unitless number, but the other one <strong>specifies</strong>
+						a unit, this unit will be used on <strong>both</strong>.
+					</p>
+					<p class="code">
+						new ScrollingAnimation("id", { left: "0vw" }, { left: 50 }, { id: "BTP" }, { id: "ETP" });<br />
+						// Explicit viewport-width unit: ABS has left = 0vw and AES has left = 50vw.
+					</p>
+					<p>
+						If both ABS and AES have a unit, their unit is going to be used. <strong>But their units
+						must match</strong>, or you'll have the unwanted behavior of having the ABS unit being used
+						in the "Inactive" and "Active" states, while the AES unit is used in the "Done" state. That's
+						almost certainly not what you desire.
+					</p>
+					<p class="code">
+						new ScrollingAnimation("id", { left: "-50vw" }, { left: "50vw" }, { id: "BTP" }, { id: "ETP" });<br />
+						// Explicit viewport-width unit: ABS has left = -50vw and AES has left = 50vw.
+						// The units match!
+					</p>
+					<p>
+						Remember to use quotes if you are using units, since <em>{ left: 50vw }</em> is invalid Javascript.
+					</p>
+				</div>
+			</div>
+
+			<div class="section">
+				<div class="title">
+					Examples
+				</div>
+				<div class="body">
 					<p>Single object being animated with DOM elements as triggering points</p>
 					<p class="code">
 						&lt;script type="text/javascript"&gt;<br />
