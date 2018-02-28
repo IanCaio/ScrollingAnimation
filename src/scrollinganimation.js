@@ -132,7 +132,11 @@ ScrollingAnimation.prototype.updateStyle = function(){
 						case "right":
 						case "top":
 						case "bottom":
-							element.style[prop] = currentProp + "px";
+							// If we don't explicitly choose an unit, either here or on AES, default is pixels
+							if(!this.extractUnit(currentProp)){
+								currentProp = currentProp + (this.extractUnit(this.AES[prop]) || "px");
+							}
+							element.style[prop] = currentProp;
 							break;
 						default:
 							element.style[prop] = currentProp;
@@ -167,7 +171,11 @@ ScrollingAnimation.prototype.updateStyle = function(){
 						case "right":
 						case "top":
 						case "bottom":
-							element.style[prop] = currentProp + "px";
+							// If we don't explicitly choose an unit, either here or on ABS, default is pixels
+							if(!this.extractUnit(currentProp)){
+								currentProp = currentProp + (this.extractUnit(this.ABS[prop]) || "px");
+							}
+							element.style[prop] = currentProp;
 							break;
 						default:
 							element.style[prop] = currentProp;
@@ -198,6 +206,22 @@ ScrollingAnimation.prototype.updateStyle = function(){
 
 						currentProp = { red: newRed, green: newGreen, blue: newBlue, alpha: newAlpha };
 						break;
+					case "left":
+					case "right":
+					case "top":
+					case "bottom":
+						// Get the real values of the property in the ABS and AES (i.e.: "10px" -> 10)
+						var ABSVal = parseFloat(this.ABS[prop]);
+						var AESVal = parseFloat(this.AES[prop]);
+
+						// Calculate the current value of the property according to the ratio
+						currentProp = (ABSVal + (this.ratio * (AESVal - ABSVal)));
+
+						// Get the unit from either the ABS or AES property
+						var unit = (this.extractUnit(this.ABS[prop]) || this.extractUnit(this.AES[prop]));
+						// If we still don't have a unit, default is pixels
+						currentProp = currentProp + (unit || "px");
+						break;
 					default:
 						currentProp = this.ABS[prop] + (this.ratio * (this.AES[prop] - this.ABS[prop]));
 				}
@@ -215,12 +239,6 @@ ScrollingAnimation.prototype.updateStyle = function(){
 						case "color":
 							element.style[prop] = this.colorFromObj(currentProp);
 							break;
-						case "left":
-						case "right":
-						case "top":
-						case "bottom":
-							element.style[prop] = currentProp + "px";
-							break;
 						default:
 							element.style[prop] = currentProp;
 					}
@@ -229,6 +247,21 @@ ScrollingAnimation.prototype.updateStyle = function(){
 				}
 			}
 		}, this);
+	}
+}
+
+// Extracts unit from a string representing a value (i.e.: "10px" -> "px");
+ScrollingAnimation.prototype.extractUnit = function (str) {
+	// Is the value a string? (user can write unitless non-string 0, which is a valid position value in CSS
+	//	or even write a unitless non-string number expecting the default unit "px" to be applied)
+	if (typeof str.substr !== 'undefined') {
+		// What is the length of the part of the string that represent the value?
+		var numberLength = parseFloat(str).toString().length;
+
+		// Extract the unit part of the string
+		return str.substr(numberLength);
+	} else {
+		return "";
 	}
 }
 
