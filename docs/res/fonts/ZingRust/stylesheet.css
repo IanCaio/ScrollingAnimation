@@ -1,0 +1,12 @@
+@font-face {
+    font-family: 'ZingRust';
+    src: url('ZingScriptRustSBDemo-Base.eot');
+    src: url('ZingScriptRustSBDemo-Base.eot?#iefix') format('embedded-opentype'),
+         url('ZingScriptRustSBDemo-Base.woff') format('woff'),
+         url('ZingScriptRustSBDemo-Base.ttf') format('truetype'),
+         url('ZingScriptRustSBDemo-Base.svg#ZingScriptRustSBDemo-Base') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
