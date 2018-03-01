@@ -288,18 +288,24 @@ ScrollingAnimation.prototype.checkRatio = function () {
 	} else if (this.state === 2){
 		this.ratio = 1;
 	} else {
-		// Are we using a DOM element or absolute position?
+		// Absolute positions of the BTP and ETP, and total distance between them
+		var BTPPos;
+		var ETPPos;
+		var total;
+
 		if (this.BTP.id) {
-			var elStartRect = document.getElementById(this.BTP.id).getBoundingClientRect();
-			var elEndRect = document.getElementById(this.ETP.id).getBoundingClientRect();
-			var total = elEndRect.top - elStartRect.top;
-
-			this.ratio = parseFloat(Math.abs(elStartRect.top))/total;
+			BTPPos = document.getElementById(this.BTP.id).getBoundingClientRect().top + window.pageYOffset;
 		} else {
-			var total = this.ETP.posY - this.BTP.posY;
-
-			this.ratio = parseFloat(window.pageYOffset - this.BTP.posY)/total;
+			BTPPos = this.BTP.posY;
 		}
+		if (this.ETP.id) {
+			ETPPos = document.getElementById(this.ETP.id).getBoundingClientRect().top + window.pageYOffset;
+		} else {
+			ETPPos = this.ETP.posY;
+		}
+		total = ETPPos - BTPPos;
+
+		this.ratio = parseFloat(window.pageYOffset - BTPPos)/total;
 	}
 }
 
