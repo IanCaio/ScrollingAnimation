@@ -58,7 +58,7 @@ The CSS properties supported right now are:
 
 Or any other CSS property whose value is only a __number__ (as the _opacity_ for example).
 
-_BTP_ and _ETP_ should both be Javascript objects with either an _id_ field (with the ID of the _BTP_/_ETP_ element) or a _posY_ field (with the _BTP_/_ETP_ Y position in pixels). If invalid fields are used, the default values of _id_ and _posY_ will be _null_ and 0 respectivelly. If id has any value other than null it will be used instead of the absolute position.
+_BTP_ and _ETP_ should both be Javascript objects with either an _id_ field (with the ID of the _BTP_/_ETP_ element) or a _posY_ field (with the _BTP_/_ETP_ Y position in pixels). If they are not supplied, the default values of _id_ and _posY_ will be _null_ and 0 respectivelly. If id has any value other than null the element with its ID will be used, and _posY_ will represent an offset from that element. For example, `{ id:"box", posY: 100}` means we will use the element with the ID "box" as a BTP/ETP, but only start after an offset of 100px from it. Negative offsets are also valid.
 
 Finally, _Config_ is a Javascript object with the configuration settings for this Scrolling Animation instance. This is optional and can be ommited if the default configuration settings are desired. The configuration options supported are listed below:
 
