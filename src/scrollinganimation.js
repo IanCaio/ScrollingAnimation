@@ -1,31 +1,3 @@
-/*
-
-The ControlledObjects (CO) is either a single "id" pointing to the object to be animated or
-an array of "id's" pointing to all the objects to be animated. Internally, those will be stored
-inside an array and then converted to the actuall DOM elements to avoid the costy use of
-document.getElementById().
-
-The AnimationBeginningState (ABS) is an object including the state of the Controlled Object in the 
-beginning of the animation. i.e.: { left: "-100px", opacity: "0" }
-
-The AnimationEndingState (AES) is an object including the state of the Controlled Object in the
-end of the animation. i.e.: { left: "0", opacity: "1" }
-
-The BeginningTriggeringPoint (BTP) is an object including two keys: "id" and "posY". If the "ID"
-field is set the "posY" field is ignored, and the DOM object with the id is used as the
-BTP reference. If "id" is null, "posY" (px) is used instead. i.e.: { id: null, posY: 400 }
-
-The EndingTriggeringPoint (ETP) is an object including two keys: "id" and "posY". If the "ID"
-field is set the "posY" field is ignored, and the DOM object with the id is used as the
-ETP reference. If "id" is null, "posY" (px) is used instead. i.e.: { id: "anchor", posY: null }
-
-The state is used to check the current animation state.
-	0 = Inactive
-	1 = Active
-	2 = Done
-
-*/
-
 var ScrollingAnimation = function (ControlledObjects, AnimationBeginningState, AnimationEndingState,
 				BeginningTriggeringPoint, EndingTriggeringPoint, Configuration) {
 	// Get the controlled objects, which will converted to an array with all the IDs if necessary:
@@ -294,12 +266,14 @@ ScrollingAnimation.prototype.checkRatio = function () {
 		var total;
 
 		if (this.BTP.id) {
-			BTPPos = document.getElementById(this.BTP.id).getBoundingClientRect().top + window.pageYOffset;
+			// Accounts for the offset too, if there is one
+			BTPPos = document.getElementById(this.BTP.id).getBoundingClientRect().top + this.BTP.posY + window.pageYOffset;
 		} else {
 			BTPPos = this.BTP.posY;
 		}
 		if (this.ETP.id) {
-			ETPPos = document.getElementById(this.ETP.id).getBoundingClientRect().top + window.pageYOffset;
+			// Accounts for the offset too, if there is one
+			ETPPos = document.getElementById(this.ETP.id).getBoundingClientRect().top + this.ETP.posY + window.pageYOffset;
 		} else {
 			ETPPos = this.ETP.posY;
 		}
@@ -314,10 +288,9 @@ ScrollingAnimation.prototype.checkState = function () {
 	// Check if we crossed the BTP
 	// Are we using a DOM element or absolute position?
 	if (this.BTP.id) {
-		var el = document.getElementById(this.BTP.id);
-		var elRect = el.getBoundingClientRect();
-		//Did we cross the BTP?
-		if (elRect.top <= 0) {
+		var BTPTop = document.getElementById(this.BTP.id).getBoundingClientRect().top;
+		//Did we cross the BTP? (if we have posY, it's used as an offset)
+		if (BTPTop <= (-this.BTP.posY)) {
 			this.state = 1; //We will check later if we are actually in the state 2
 		} else {
 			this.state = 0;
@@ -333,10 +306,9 @@ ScrollingAnimation.prototype.checkState = function () {
 	// Check if we crossed the ETP
 	// Are we using a DOM element or absolute position?
 	if (this.ETP.id) {
-		var el = document.getElementById(this.ETP.id);
-		var elRect = el.getBoundingClientRect();
-		//Did we cross the ETP?
-		if (elRect.top <= 0) {
+		var ETPTop = document.getElementById(this.ETP.id).getBoundingClientRect().top;
+		//Did we cross the ETP? (if we have posY, it's used as an offset)
+		if (ETPTop <= (-this.ETP.posY)) {
 			this.state = 2;
 		}
 	} else {

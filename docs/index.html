@@ -151,9 +151,11 @@
 					<p>
 						<em>BTP</em> and <em>ETP</em> should both be Javascript objects with either an <em>id</em> field
 						(with the ID of the BTP/ETP element) or a <em>posY</em> field (with the BTP/ETP Y position in pixels).
-						If invalid fields are used, the default values of <em>id</em> and <em>posY</em> will be <em>null</em>
-						and 0 respectivelly. If <em>id</em> has any value other than <em>null</em> it will be used instead
-						of the absolute position.
+						If they are not supplied, the default values of <em>id</em> and <em>posY</em> will be <em>null</em>
+						and 0 respectivelly. If <em>id</em> has any value other than <em>null</em> the element with its ID
+						will be used, and <em>posY</em> will represent an offset from that element. For example,
+						<em>{ id: "box", posY: 100 }</em> means we will use the element with the ID "box" as a BTP/ETP, but
+						only start after an offset of 100px from it. Negative offsets are also valid.
 					</p>
 					<p>
 						Finally, <em>Config</em> is a Javascript object with the configuration settings for this Scrolling
