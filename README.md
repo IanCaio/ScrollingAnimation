@@ -24,7 +24,7 @@ In the moment the viewport top border hits the BTP, the animation will shift to 
 
 Once the viewport passes the ETP, the animation will shift to the "Done" state, where all the COs properties will be equal to the AES.
 
-To make the script a little more efficient, we store the current state of every CO in an array and only touch the DOM CSS properties when there is a change. This avoids the DOM CSS being manipulated more often than necessary and possibly causing unnecessary re-renders.
+To make the script a little more efficient, on every iteration we check if the animation state or ratio has changed before calling the function that will update the Controlled Objects and their CSS properties. This avoids useless function calls and, most importantly, the DOM CSS being manipulated more often than necessary, possibly causing redundant re-renders.
 
 ## How to use
 
