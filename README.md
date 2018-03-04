@@ -92,6 +92,12 @@ new ScrollingAnimation("id", { left: "-50vw" }, { left: "50vw" }, { id: "BTP" },
 
 Remember to use quotes if you are using units, since `{ left: 50vw }` is invalid Javascript.
 
+### Using callbacks to extend functionality
+
+The callback configuration gives us the possibility of implementing functionality that is not natively supported by the script: changing non-supported CSS properties, or reacting to changes in more complex ways like iterating through different pictures for example.
+
+To do that, we create a function that will receive the state and ratio as arguments, and use their values to react to the animation state change. State will be 0 for Inactive, 1 for Active and 2 for Done, while ratio will be a floating point number between 0 and 1, 0 being the closest to the BTP and 1 the closest to the ETP.
+
 ## Examples:
 
 Single object being animated with DOM elements as triggering points
