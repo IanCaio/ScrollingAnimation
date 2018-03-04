@@ -62,7 +62,8 @@ _BTP_ and _ETP_ should both be Javascript objects with either an _id_ field (wit
 
 Finally, _Config_ is a Javascript object with the configuration settings for this Scrolling Animation instance. This is optional and can be ommited if the default configuration settings are desired. The configuration options supported are listed below:
 
-- killOnEnd - If this configuration is set to true, the animation will kill itself once it reaches the "Done" state. The default value is false.
+- killOnEnd - If this configuration is set to true, the animation will kill itself once it reaches the "Done" state. The default value is _false_.
+- callback - An optional callback function in the format `function(state, ratio)` that will be called every time there is a state or ratio change. This function allows the user to customize responses to state changes and extend the script functionality. The default value is _null_.
 
 ### Using units on position properties:
 
@@ -130,5 +131,16 @@ Enabling the killOnEnd configuration:
 ```
 <script type="text/javascript">
 new ScrollingAnimation("id", { left: 0 }, { left: 200 }, { id: "BTP" }, { id: "ETP" }, { killOnEnd: true });
+</script>
+```
+
+Using a callback with the animation:
+
+```
+<script type="text/javascript">
+var myFunc = function(state, ratio){
+	// Does something with the animation state and ratio...
+}
+new ScrollingAnimation("id", { left: 0 }, { left: 200 }, { id: "BTP" }, { id: "ETP" }, { callback: myFunc });
 </script>
 ```

@@ -169,6 +169,12 @@
 							If this configuration is set to <em>true</em>, the animation will kill itself once it reaches
 							the "Done" state. The default value is <em>false</em>.
 						</dd>
+						<dt>callback</dt>
+						<dd>
+							An optional callback function in the format <em>function(state, ratio)</em> that will be called
+							every time there is a state or ratio change. This function allows the user to customize responses
+							to state changes and extend the script functionality. The default value is <em>null</em>.
+						<dd>
 					</dl>
 
 					<h3>Using units on position properties:</h3>
@@ -241,6 +247,15 @@
 					<p class="code">
 						&lt;script type="text/javascript"&gt;<br />
 						new ScrollingAnimation("id", { left: 0 }, { left: 200 }, { id: "BTP" }, { id: "ETP" }, { killOnEnd: true });<br />
+						&lt;/script&gt;
+					</p>
+					<p>Using a callback with the animation:</p>
+					<p class="code">
+						&lt;script type="text/javascript"&gt;<br />
+						var myFunc = function(state, ratio){<br />
+						&nbsp;&nbsp;// Does something with the animation state and ratio...<br />
+						}<br />
+						new ScrollingAnimation("id", { left: 0 }, { left: 200 }, { id: "BTP" }, { id: "ETP" }, { callback: myFunc });<br />
 						&lt;/script&gt;
 					</p>
 				</div>

@@ -30,9 +30,9 @@ var ScrollingAnimation = function (ControlledObjects, AnimationBeginningState, A
 	this.oldRatio = -1;
 
 	// Set the configurations or use the defaults if none is given
-	// For now the only configuration option we have is killOnEnd: When it's true, the animation will stop once it reaches
-	// the "Done" state. The default is false.
-	var defaultConfig = { killOnEnd: false };
+	// killOnEnd: When it's true, the animation will stop once it reaches the "Done" state. The default is false.
+	// callback: Specifies a function to be called on state/ratio changes. The default is null (no function).
+	var defaultConfig = { killOnEnd: false, callback: null };
 	this.config = (typeof Configuration === 'undefined') ? defaultConfig : Object.assign(defaultConfig, Configuration);
 
 	//Bind methods
@@ -50,6 +50,11 @@ ScrollingAnimation.prototype.update = function(){
 	if (this.state !== this.oldState || this.ratio !== this.oldRatio) {
 		this.oldState = this.state;
 		this.oldRatio = this.ratio;
+
+		// If we set a callback function, call it with the state and ratio as arguments
+		if (this.config.callback) {
+			this.config.callback(this.state, this.ratio);
+		}
 
 		this.updateStyle();
 	}
