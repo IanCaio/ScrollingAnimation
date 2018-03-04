@@ -93,9 +93,10 @@
 						properties will be equal to the AES.
 					</p>
 					<p id="TP5">
-						To make the script a little more efficient, we store the current state of every CO in an array and
-						only touch the DOM CSS properties when there is a change. This avoids the DOM CSS being manipulated
-						more often than necessary and possibly causing unnecessary re-renders.
+						To make the script a little more efficient, on every iteration we check if the animation state or ratio
+						has changed before calling the function that will update the Controlled Objects and their CSS properties.
+						This avoids useless function calls and, most importantly, the DOM CSS being manipulated more often than
+						necessary, possibly causing redundant re-renders.
 					</p>
 				</div>
 			</div>
@@ -168,6 +169,12 @@
 							If this configuration is set to <em>true</em>, the animation will kill itself once it reaches
 							the "Done" state. The default value is <em>false</em>.
 						</dd>
+						<dt>callback</dt>
+						<dd>
+							An optional callback function in the format <em>function(state, ratio)</em> that will be called
+							every time there is a state or ratio change. This function allows the user to customize responses
+							to state changes and extend the script functionality. The default value is <em>null</em>.
+						<dd>
 					</dl>
 
 					<h3>Using units on position properties:</h3>
@@ -240,6 +247,15 @@
 					<p class="code">
 						&lt;script type="text/javascript"&gt;<br />
 						new ScrollingAnimation("id", { left: 0 }, { left: 200 }, { id: "BTP" }, { id: "ETP" }, { killOnEnd: true });<br />
+						&lt;/script&gt;
+					</p>
+					<p>Using a callback with the animation:</p>
+					<p class="code">
+						&lt;script type="text/javascript"&gt;<br />
+						var myFunc = function(state, ratio){<br />
+						&nbsp;&nbsp;// Does something with the animation state and ratio...<br />
+						}<br />
+						new ScrollingAnimation("id", { left: 0 }, { left: 200 }, { id: "BTP" }, { id: "ETP" }, { callback: myFunc });<br />
 						&lt;/script&gt;
 					</p>
 				</div>

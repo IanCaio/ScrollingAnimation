@@ -15,15 +15,6 @@ var ScrollingAnimation = function (ControlledObjects, AnimationBeginningState, A
 		return null;
 	}
 
-	// Creates an array with the state of each CO and initialize the values
-	this.COState = this.CO.map(function(element){
-		var state = Object.assign({}, AnimationBeginningState); // Create the state (values don't matter here because we will change them)
-		for(prop in state){
-			state[prop] = element.style[prop]; // Get the initial values from the DOM element CSS
-		}
-		return state;
-	});
-
 	// Get the beginning and ending triggers
 	this.BTP = Object.assign({id: null, posY: 0}, BeginningTriggeringPoint);
 	this.ETP = Object.assign({id: null, posY: 0}, EndingTriggeringPoint);
@@ -32,10 +23,16 @@ var ScrollingAnimation = function (ControlledObjects, AnimationBeginningState, A
 	this.state = 0;
 	this.ratio = 0; // The ratio of the current position in relation to BTP and ETP
 
+	// Those store the values of the state and ratio in the last iteration and are used to check if either the state
+	// or the ratio has changed. We only call the updateStyle method if one of them has changed.
+	// They start as -1 to force the first loop to recognize a change in the state/ratio and call updateStyle.
+	this.oldState = -1;
+	this.oldRatio = -1;
+
 	// Set the configurations or use the defaults if none is given
-	// For now the only configuration option we have is killOnEnd: When it's true, the animation will stop once it reaches
-	// the "Done" state. The default is false.
-	var defaultConfig = { killOnEnd: false };
+	// killOnEnd: When it's true, the animation will stop once it reaches the "Done" state. The default is false.
+	// callback: Specifies a function to be called on state/ratio changes. The default is null (no function).
+	var defaultConfig = { killOnEnd: false, callback: null };
 	this.config = (typeof Configuration === 'undefined') ? defaultConfig : Object.assign(defaultConfig, Configuration);
 
 	//Bind methods
@@ -49,7 +46,18 @@ var ScrollingAnimation = function (ControlledObjects, AnimationBeginningState, A
 ScrollingAnimation.prototype.update = function(){
 	this.checkState();
 	this.checkRatio();
-	this.updateStyle();
+	// Did we have a change in the state or ratio?
+	if (this.state !== this.oldState || this.ratio !== this.oldRatio) {
+		this.oldState = this.state;
+		this.oldRatio = this.ratio;
+
+		// If we set a callback function, call it with the state and ratio as arguments
+		if (this.config.callback) {
+			this.config.callback(this.state, this.ratio);
+		}
+
+		this.updateStyle();
+	}
 }
 
 // Returns a rgba(r,g,b,a) string from an object with red, green, blue and alpha fields
@@ -87,34 +95,27 @@ ScrollingAnimation.prototype.updateStyle = function(){
 			for (prop in this.ABS){
 				currentProp = this.ABS[prop];
 
-				// Has at least some property in the state changed?
-				var stateChange = (currentProp instanceof Object) ?
-					!this.areEquivalent(currentProp, this.COState[index][prop]) : currentProp !== this.COState[index][prop];
-				if (stateChange) {
-					// Some properties need to be assigned in a special way, since they are not
-					// represented only by a number (ie: backgroundColor and color, since they are
-					// represented with an object having "red", "green", "blue" and "alpha" keys. Or
-					// position properties that need "px" appended).
-					switch (prop) {
-						case "backgroundColor":
-						case "color":
-							element.style[prop] = this.colorFromObj(currentProp);
-							break;
-						case "left":
-						case "right":
-						case "top":
-						case "bottom":
-							// If we don't explicitly choose an unit, either here or on AES, default is pixels
-							if(!this.extractUnit(currentProp)){
-								currentProp = currentProp + (this.extractUnit(this.AES[prop]) || "px");
-							}
-							element.style[prop] = currentProp;
-							break;
-						default:
-							element.style[prop] = currentProp;
-					}
-
-					this.COState[index][prop] = currentProp;
+				// Some properties need to be assigned in a special way, since they are not
+				// represented only by a number (ie: backgroundColor and color, since they are
+				// represented with an object having "red", "green", "blue" and "alpha" keys. Or
+				// position properties that need "px" appended).
+				switch (prop) {
+					case "backgroundColor":
+					case "color":
+						element.style[prop] = this.colorFromObj(currentProp);
+						break;
+					case "left":
+					case "right":
+					case "top":
+					case "bottom":
+						// If we don't explicitly choose an unit, either here or on AES, default is pixels
+						if(!this.extractUnit(currentProp)){
+							currentProp = currentProp + (this.extractUnit(this.AES[prop]) || "px");
+						}
+						element.style[prop] = currentProp;
+						break;
+					default:
+						element.style[prop] = currentProp;
 				}
 			}
 		}, this);
@@ -126,34 +127,27 @@ ScrollingAnimation.prototype.updateStyle = function(){
 			for (prop in this.AES){
 				currentProp = this.AES[prop];
 
-				// Has at least some property in the state changed?
-				var stateChange = (currentProp instanceof Object) ?
-					!this.areEquivalent(currentProp, this.COState[index][prop]) : currentProp !== this.COState[index][prop];
-				if (stateChange) {
-					// Some properties need to be assigned in a special way, since they are not
-					// represented only by a number (ie: backgroundColor and color, since they are
-					// represented with an object having "red", "green", "blue" and "alpha" keys. Or
-					// position properties that need "px" appended).
-					switch (prop) {
-						case "backgroundColor":
-						case "color":
-							element.style[prop] = this.colorFromObj(currentProp);
-							break;
-						case "left":
-						case "right":
-						case "top":
-						case "bottom":
-							// If we don't explicitly choose an unit, either here or on ABS, default is pixels
-							if(!this.extractUnit(currentProp)){
-								currentProp = currentProp + (this.extractUnit(this.ABS[prop]) || "px");
-							}
-							element.style[prop] = currentProp;
-							break;
-						default:
-							element.style[prop] = currentProp;
-					}
-
-					this.COState[index][prop] = currentProp;
+				// Some properties need to be assigned in a special way, since they are not
+				// represented only by a number (ie: backgroundColor and color, since they are
+				// represented with an object having "red", "green", "blue" and "alpha" keys. Or
+				// position properties that need "px" appended).
+				switch (prop) {
+					case "backgroundColor":
+					case "color":
+						element.style[prop] = this.colorFromObj(currentProp);
+						break;
+					case "left":
+					case "right":
+					case "top":
+					case "bottom":
+						// If we don't explicitly choose an unit, either here or on ABS, default is pixels
+						if(!this.extractUnit(currentProp)){
+							currentProp = currentProp + (this.extractUnit(this.ABS[prop]) || "px");
+						}
+						element.style[prop] = currentProp;
+						break;
+					default:
+						element.style[prop] = currentProp;
 				}
 			}
 		}, this);
@@ -177,6 +171,8 @@ ScrollingAnimation.prototype.updateStyle = function(){
 						var newAlpha = this.ABS[prop].alpha + (this.ratio * (this.AES[prop].alpha - this.ABS[prop].alpha));
 
 						currentProp = { red: newRed, green: newGreen, blue: newBlue, alpha: newAlpha };
+
+						element.style[prop] = this.colorFromObj(currentProp);
 						break;
 					case "left":
 					case "right":
@@ -193,29 +189,13 @@ ScrollingAnimation.prototype.updateStyle = function(){
 						var unit = (this.extractUnit(this.ABS[prop]) || this.extractUnit(this.AES[prop]));
 						// If we still don't have a unit, default is pixels
 						currentProp = currentProp + (unit || "px");
+
+						element.style[prop] = currentProp;
 						break;
 					default:
 						currentProp = this.ABS[prop] + (this.ratio * (this.AES[prop] - this.ABS[prop]));
-				}
 
-				// Has at least some property in the state changed?
-				var stateChange = (currentProp instanceof Object) ?
-					!this.areEquivalent(currentProp, this.COState[index][prop]) : currentProp !== this.COState[index][prop];
-				if (stateChange) {
-					// Some properties need to be assigned in a special way, since they are not
-					// represented only by a number (ie: backgroundColor and color, since they are
-					// represented with an object having "red", "green", "blue" and "alpha" keys. Or
-					// position properties that need "px" appended).
-					switch (prop) {
-						case "backgroundColor":
-						case "color":
-							element.style[prop] = this.colorFromObj(currentProp);
-							break;
-						default:
-							element.style[prop] = currentProp;
-					}
-
-					this.COState[index][prop] = currentProp;
+						element.style[prop] = currentProp;
 				}
 			}
 		}, this);
