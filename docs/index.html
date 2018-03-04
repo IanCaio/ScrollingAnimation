@@ -211,6 +211,20 @@
 					<p>
 						Remember to use quotes if you are using units, since <em>{ left: 50vw }</em> is invalid Javascript.
 					</p>
+
+					<h3>Using callbacks to extend functionality:</h3>
+
+					<p>
+						The callback configuration gives us the possibility of implementing functionality that is not
+						natively supported by the script: changing non-supported CSS properties, or reacting to changes
+						in more complex ways like iterating through different pictures for example.
+					</p>
+					<p>
+						To do that, we create a function that will receive the <em>state</em> and <em>ratio</em> as arguments,
+						and use their values to react to the animation state change. <em>State</em> will be 0 for <em>Inactive</em>,
+						1 for <em>Active</em> and 2 for <em>Done</em>, while <em>ratio</em> will be a floating point number between
+						0 and 1, 0 being the closest to the BTP and 1 the closest to the ETP.
+					</p>
 				</div>
 			</div>
 
