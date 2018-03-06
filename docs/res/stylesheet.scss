@@ -12,6 +12,13 @@ $min-aspect-ratio: "4/3";
 $min-width: 800px;
 $min-height: 600px;
 
+a {
+	color: #004165;
+	&:hover {
+		color: lighten(#004165, 20%);
+	}
+}
+
 .header {
 	width: 100%;
 	height: 60vh;
@@ -78,6 +85,37 @@ $min-height: 600px;
 				}
 				dd {
 					padding-left: 2rem;
+				}
+			}
+
+			.github-link {
+				width: 100%;
+				height: 12vh;
+				padding: 2vh 0;
+				line-height: 8vh;
+				white-space: nowrap;
+				overflow: auto;
+				margin-bottom: 4vh;
+
+				img {
+					height: 100%;
+					float: left;
+					margin-right: 3vw;
+				}
+
+				h3 {
+					font-family: "RobotoRegular";
+					font-size: 3vh;
+					vertical-align: middle;
+					margin: 0;
+				}
+				a {
+					text-decoration-style: dotted;
+
+					color: #0f0f0f;
+					&:hover {
+						color: #3f3f3f;
+					}
 				}
 			}
 		}
