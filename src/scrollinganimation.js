@@ -10,7 +10,7 @@ var ScrollingAnimation = function (ControlledObjects, AnimationBeginningState, A
 	// Get the animation beginning and ending states
 	this.ABS = Object.assign({}, AnimationBeginningState);
 	this.AES = Object.assign({}, AnimationEndingState);
-	if (this.validateAnimStates(this.ABS, this.AES) === false) {
+	if (!this.validateAnimStates(this.ABS, this.AES)) {
 		console.error("[ScrollingAnimation] Error: The animation state objects have unmatched keys!");
 		return null;
 	}
@@ -35,10 +35,10 @@ var ScrollingAnimation = function (ControlledObjects, AnimationBeginningState, A
 	var defaultConfig = { killOnEnd: false, callback: null };
 	this.config = (typeof Configuration === 'undefined') ? defaultConfig : Object.assign(defaultConfig, Configuration);
 
-	//Bind methods
+	// Bind methods
 	this.update = this.update.bind(this);
 
-	//Later change for animation frames
+	// Later change for animation frames
 	this.intervalID = setInterval(this.update, 16);
 }
 
@@ -269,16 +269,16 @@ ScrollingAnimation.prototype.checkState = function () {
 	// Are we using a DOM element or absolute position?
 	if (this.BTP.id) {
 		var BTPTop = document.getElementById(this.BTP.id).getBoundingClientRect().top;
-		//Did we cross the BTP? (if we have posY, it's used as an offset)
+		// Did we cross the BTP? (if we have posY, it's used as an offset)
 		if (BTPTop <= (-this.BTP.posY)) {
-			this.state = 1; //We will check later if we are actually in the state 2
+			this.state = 1; // We will check later if we are actually in the state 2
 		} else {
 			this.state = 0;
 		}
 	} else {
-		//Did we cross the BTP?
+		// Did we cross the BTP?
 		if (window.pageYOffset >= this.BTP.posY) {
-			this.state = 1; //We will check later if we are actually in the state 2
+			this.state = 1; // We will check later if we are actually in the state 2
 		} else {
 			this.state = 0;
 		}
@@ -287,12 +287,12 @@ ScrollingAnimation.prototype.checkState = function () {
 	// Are we using a DOM element or absolute position?
 	if (this.ETP.id) {
 		var ETPTop = document.getElementById(this.ETP.id).getBoundingClientRect().top;
-		//Did we cross the ETP? (if we have posY, it's used as an offset)
+		// Did we cross the ETP? (if we have posY, it's used as an offset)
 		if (ETPTop <= (-this.ETP.posY)) {
 			this.state = 2;
 		}
 	} else {
-		//Did we cross the ETP?
+		// Did we cross the ETP?
 		if (window.pageYOffset >= this.ETP.posY) {
 			this.state = 2;
 		}
