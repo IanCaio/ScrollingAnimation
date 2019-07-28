@@ -1,3 +1,13 @@
+/**
+ * The animation constructor
+ * @constructor
+ * @param {(string|string[])} ControlledObjects - ID of controlled objects (or array with IDs if more than 1) of the animation.
+ * @param {object} AnimationBeginningState - Object with the CSS properties of the controlled object in the beginning of the animation.
+ * @param {object} AnimationEndingState - Object with the CSS properties of the controlled object in the ending of the animation.
+ * @param {object} BeginningTriggeringPoint - Object with the ID of the trigger, the Y position in pixels or the ID and an offset. Has the fields 'id' and 'posY'.
+ * @param {object} EndingTriggeringPoint - Object with the ID of the trigger, the Y position in pixels or the ID and an offset. Has the fields 'id' and 'posY'.
+ * @param {object} Configuration - Object containing any extra settings of the animation.
+ */
 var ScrollingAnimation = function (ControlledObjects, AnimationBeginningState, AnimationEndingState,
 				BeginningTriggeringPoint, EndingTriggeringPoint, Configuration) {
 	// Get the controlled objects, which will converted to an array with all the IDs if necessary:
@@ -42,7 +52,10 @@ var ScrollingAnimation = function (ControlledObjects, AnimationBeginningState, A
 	this.intervalID = setInterval(this.update, 16);
 }
 
-// General update function
+/**
+ * Callback that updates the animation
+ * @callback
+ */
 ScrollingAnimation.prototype.update = function(){
 	this.checkState();
 	this.checkRatio();
@@ -60,12 +73,21 @@ ScrollingAnimation.prototype.update = function(){
 	}
 }
 
-// Returns a rgba(r,g,b,a) string from an object with red, green, blue and alpha fields
+/**
+ * Returns a "rgba(R,G,B,A)" string from an object with red, green, blue and alpha fields
+ * @method
+ * @param {object} obj - An object with 'red', 'green', 'blue' and 'alpha' fields to be used to build the string.
+ */
 ScrollingAnimation.prototype.colorFromObj = function (obj) {
 	return "rgba(" + parseInt(obj.red) + "," + parseInt(obj.green) + "," + parseInt(obj.blue) + "," + obj.alpha + ")";
 }
 
-// Checks if two objects are equivalent
+/**
+ * OBSOLETE FUNCTION - Checks if two objects are equivalent
+ * @method
+ * @param {object} obj1 - Object to be compared for equivalence
+ * @param {object} obj2 - Object to be compared for equivalence
+ */
 ScrollingAnimation.prototype.areEquivalent = function (obj1, obj2) {
 	var props1 = Object.getOwnPropertyNames(obj1);
 	var props2 = Object.getOwnPropertyNames(obj2);
@@ -85,7 +107,10 @@ ScrollingAnimation.prototype.areEquivalent = function (obj1, obj2) {
 	return true;
 }
 
-// Updates the style for each Controlled Object
+/**
+ * Updates the CSS style for each Controlled Object
+ * @method
+ */
 ScrollingAnimation.prototype.updateStyle = function(){
 	if (this.state === 0){
 		// Style matches the ABS
@@ -202,7 +227,11 @@ ScrollingAnimation.prototype.updateStyle = function(){
 	}
 }
 
-// Extracts unit from a string representing a value (i.e.: "10px" -> "px");
+/**
+ * Extracts unit from a string representing a value (i.e.: "10px" returns "px");
+ * @method
+ * @param {string} str - String we want to extract the unit from.
+ */
 ScrollingAnimation.prototype.extractUnit = function (str) {
 	// Is the value a string? (user can write unitless non-string 0, which is a valid position value in CSS
 	//	or even write a unitless non-string number expecting the default unit "px" to be applied)
@@ -217,7 +246,12 @@ ScrollingAnimation.prototype.extractUnit = function (str) {
 	}
 }
 
-// Checks if the ABP and AES objects have the same keys (and nothing else)
+/**
+ * Checks if the ABP and AES objects have the same keys (and nothing else)
+ * @method
+ * @param {object} obj1 - Animation state to be validated.
+ * @param {object} obj2 - Animation state to be validated.
+ */
 ScrollingAnimation.prototype.validateAnimStates = function (obj1, obj2) {
 	var keys1 = Object.keys(obj1);
 	var keys2 = Object.keys(obj2);
@@ -233,7 +267,10 @@ ScrollingAnimation.prototype.validateAnimStates = function (obj1, obj2) {
 	return false;
 }
 
-// Checks the current animation ratio
+/**
+ * Checks the current animation ratio
+ * @method
+ */
 ScrollingAnimation.prototype.checkRatio = function () {
 	if (this.state === 0) {
 		this.ratio = 0;
@@ -263,7 +300,10 @@ ScrollingAnimation.prototype.checkRatio = function () {
 	}
 }
 
-// Checks the current animation state
+/**
+ * Checks the current animation state
+ * @method
+ */
 ScrollingAnimation.prototype.checkState = function () {
 	// Check if we crossed the BTP
 	// Are we using a DOM element or absolute position?
